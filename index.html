@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What Your Hand Holds</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- LANDING SCREEN                         -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="screen active" id="screen-landing">
+    <div class="landing-inner">
+      <div class="landing-badge">✦ NEW ✦</div>
+      <div class="title-main">WHAT YOUR<br>HAND<br>HOLDS</div>
+      <div class="title-divider">━━━━━━━━━━━━━━━━</div>
+      <div class="title-sub">[ an experiment in scale ]</div>
+      <div class="hand-emoji">🖐️</div>
+      <button class="btn-primary" id="btn-start">OPEN YOUR HAND →</button>
+      <p class="tagline">8 objects · 8 facts that'll mess with your head<br>No data collected. Works in your browser.</p>
+    </div>
+    <div class="landing-footer">
+      <span class="footer-left blink">⚡ BEST VIEWED IN 800×600 ⚡</span>
+      <span class="footer-center">✦ WHAT YOUR HAND HOLDS ✦ EST. 2025 ✦</span>
+      <span class="footer-right">YOU ARE VISITOR #<span id="hit-count" class="hit-counter">000000</span></span>
+    </div>
+    <div class="under-construction">
+      <span class="blink">🚧</span> UNDER CONSTRUCTION <span class="blink">🚧</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- LOADING SCREEN                         -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="screen" id="screen-loading">
+    <div class="loading-box">
+      <div class="loading-title">LOADING<br>HAND MAGIC</div>
+      <div class="loading-dots" id="loading-dots">◈ ◈ ◈</div>
+      <div class="loading-sub">Initializing palm detection...</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- CAMERA SCREEN                          -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="screen" id="screen-camera">
+    <!-- Webcam feed -->
+    <video id="webcam" autoplay playsinline muted></video>
+
+    <!-- Colored background tint that changes per object -->
+    <div id="bg-tint"></div>
+
+    <!-- Object bubble — follows the palm -->
+    <div id="palm-object" class="hidden">
+      <div class="object-bubble" id="object-bubble">
+        <span id="object-emoji"></span>
+      </div>
+    </div>
+
+    <!-- Fist hold indicator (SVG ring + label) -->
+    <div id="fist-indicator" class="hidden">
+      <svg class="fist-ring-svg" viewBox="0 0 100 100" width="90" height="90">
+        <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="10"/>
+        <circle id="fist-ring-path" cx="50" cy="50" r="38" fill="none"
+          stroke="#ffffff" stroke-width="10"
+          stroke-dasharray="238.76" stroke-dashoffset="238.76"
+          stroke-linecap="round"
+          transform="rotate(-90 50 50)"/>
+      </svg>
+      <div class="fist-label">HOLD TO DROP</div>
+    </div>
+
+    <!-- Hand status / instruction card -->
+    <div id="hand-status">
+      <div class="status-card" id="status-card">
+        <span id="status-text">SHOW YOUR OPEN<br>PALM TO BEGIN</span>
+      </div>
+    </div>
+
+    <!-- Top bar: drop button + progress -->
+    <div id="top-bar" class="hidden">
+      <div id="obj-counter"><span id="obj-num">1</span><span class="counter-slash"> / 8</span></div>
+      <div id="progress-dots"></div>
+      <button class="btn-drop" id="btn-drop">DROP IT ✊</button>
+    </div>
+
+    <!-- Fact card at bottom -->
+    <div id="fact-card" class="hidden">
+      <div class="fc-name" id="fc-name"></div>
+      <div class="fc-stat-row">
+        <div class="fc-big-num" id="fc-big-num"></div>
+        <div class="fc-big-label" id="fc-big-label"></div>
+      </div>
+      <div class="fc-fact" id="fc-fact"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- SUMMARY SCREEN                         -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="screen" id="screen-summary">
+    <div class="summary-scroll">
+      <div class="summary-inner">
+        <div class="summary-title">TODAY YOUR<br>HAND HELD:</div>
+        <div class="summary-grid" id="summary-grid"></div>
+        <div class="summary-stats" id="summary-stats"></div>
+        <div class="summary-cheeky">And your hand didn't even get tired.</div>
+        <div class="summary-btns">
+          <button class="btn-summary btn-restart" id="btn-restart">↩ START OVER</button>
+          <button class="btn-summary btn-share" id="btn-share">⎘ SHARE THIS</button>
+        </div>
+        <div class="summary-footer">✦ WHAT YOUR HAND HOLDS ✦ 2025 ✦</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div id="toast">LINK COPIED! ✓</div>
+
+  <!-- MediaPipe Hands -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+  <script src="app.js"></script>
+</body>
+</html>
