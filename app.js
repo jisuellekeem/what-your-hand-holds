@@ -518,15 +518,14 @@ function startCamera() {
   })
   .then(stream => {
     webcamEl.srcObject = stream;
-    // Wait for actual video frames to be available
-    return new Promise(resolve => {
-      webcamEl.onloadeddata = resolve;
-    });
+    webcamEl.setAttribute('autoplay', '');
+    webcamEl.setAttribute('playsinline', '');
+    return webcamEl.play().catch(() => {});
   })
   .then(() => {
-    return webcamEl.play();
-  })
-  .then(() => {
+    // Show camera screen IMMEDIATELY so user sees their webcam
+    showScreen('camera');
+    // Then load MediaPipe in the background
     initMediaPipe();
   })
   .catch(err => {
@@ -543,37 +542,39 @@ function initMediaPipe() {
   }
   frameLoopActive = false;
 
-  mpHands = new Hands({
-    locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
-  });
+  try {
+    mpHands = new Hands({
+      locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+    });
 
-  mpHands.setOptions({
-    maxNumHands:            1,
-    modelComplexity:        1,
-    minDetectionConfidence: 0.7,
-    minTrackingConfidence:  0.5,
-  });
+    mpHands.setOptions({
+      maxNumHands:            1,
+      modelComplexity:        1,
+      minDetectionConfidence: 0.7,
+      minTrackingConfidence:  0.5,
+    });
 
-  mpHands.onResults(onResults);
+    mpHands.onResults(onResults);
 
-  // Show camera screen — webcam is already playing
-  showScreen('camera');
+    // Send frames to MediaPipe via requestAnimationFrame
+    frameLoopActive = true;
+    let sending = false;
 
-  // Send frames to MediaPipe via requestAnimationFrame (no Camera utility)
-  frameLoopActive = true;
-  let sending = false;
-
-  function processFrame() {
-    if (!frameLoopActive || !mpHands) return;
-    if (webcamEl.readyState >= 2 && !sending) {
-      sending = true;
-      mpHands.send({ image: webcamEl })
-        .then(() => { sending = false; })
-        .catch(() => { sending = false; });
+    function processFrame() {
+      if (!frameLoopActive || !mpHands) return;
+      if (webcamEl.readyState >= 2 && !sending) {
+        sending = true;
+        mpHands.send({ image: webcamEl })
+          .then(() => { sending = false; })
+          .catch(() => { sending = false; });
+      }
+      requestAnimationFrame(processFrame);
     }
     requestAnimationFrame(processFrame);
+  } catch (e) {
+    console.error('MediaPipe init error:', e);
+    // Camera still works even if hand detection fails
   }
-  requestAnimationFrame(processFrame);
 }
 
 // ─────────────────────────────────────────────
