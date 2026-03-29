@@ -218,7 +218,6 @@ html, body {
 ═══════════════════════════════════════════════ */
 #screen-camera {
   background: #111;
-  position: relative;
   overflow: hidden;
 }
 
